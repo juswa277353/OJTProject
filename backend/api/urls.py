@@ -1,12 +1,25 @@
+# api/urls.py
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import RegisterView, AdminView, ClientView, GuestView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView, # You can use this for a simple JWT login if not using custom login view
+    TokenRefreshView,
+)
+from .views import (
+    UserRegistrationView,
+    UserLoginView,
+    GoogleAuthRegisterView,
+    GoogleAuthLoginView,
+)
 
 urlpatterns = [
-    path('register/', RegisterView.as_view(), name='register'),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # Standard email/password authentication
+    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('login/', UserLoginView.as_view(), name='login'),
+
+    # JWT token refresh endpoint (useful for keeping users logged in)
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('admin/', AdminView.as_view(), name='admin'),
-    path('client/', ClientView.as_view(), name='client'),
-    path('guest/', GuestView.as_view(), name='guest'),
+
+    # Google OAuth authentication
+    path('google/register/', GoogleAuthRegisterView.as_view(), name='google_register'),
+    path('google/login/', GoogleAuthLoginView.as_view(), name='google_login'),
 ]
