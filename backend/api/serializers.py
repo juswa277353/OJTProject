@@ -12,15 +12,17 @@ from google.auth.transport import requests as google_requests
 class UserRegisterSerializer(serializers.ModelSerializer):
     """
     Serializer for user registration with email, password, and role.
-    Includes password confirmation.
+    Includes password confirmation, phone number, and birthday.
     """
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
     confirm_password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
-    role = serializers.ChoiceField(choices=CustomUser.ROLE_CHOICES, default='user') # User can choose role
+    role = serializers.ChoiceField(choices=CustomUser.ROLE_CHOICES, default='guest') # Updated default role
+    phone_number = serializers.CharField(max_length=20, required=False, allow_blank=True) # New field
+    birthday = serializers.DateField(required=False, allow_null=True) # New field
 
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name', 'email', 'password', 'confirm_password', 'role')
+        fields = ('first_name', 'last_name', 'email', 'password', 'confirm_password', 'role', 'phone_number', 'birthday')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True},
@@ -45,7 +47,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
-            role=validated_data.get('role', 'user') # Ensure role is set, default to 'user'
+            role=validated_data.get('role', 'guest'), # Ensure role is set, default to 'guest'
+            phone_number=validated_data.get('phone_number', None), # Save new field
+            birthday=validated_data.get('birthday', None) # Save new field
         )
         return user
 
@@ -64,7 +68,6 @@ class UserLoginSerializer(serializers.Serializer):
         password = data.get('password')
 
         if email and password:
-            # authenticate() checks the credentials and returns the user object if valid
             user = authenticate(request=self.context.get('request'), email=email, password=password)
             if not user:
                 raise serializers.ValidationError('Invalid login credentials.')
@@ -77,32 +80,36 @@ class UserLoginSerializer(serializers.Serializer):
 class GoogleAuthSerializer(serializers.Serializer):
     """
     Serializer to handle Google ID token verification and extract user information.
-    Can also accept a 'role' for registration purposes.
+    Only expects 'token' and 'role' from the frontend.
     """
     token = serializers.CharField(required=True) # The Google ID token from the frontend
-    role = serializers.ChoiceField(choices=CustomUser.ROLE_CHOICES, default='user', required=False) # Optional role for registration
+    role = serializers.ChoiceField(choices=CustomUser.ROLE_CHOICES, default='guest', required=False) # Optional role for registration
 
-    def validate_token(self, token):
+    def validate(self, data):
         """
-        Verify the Google ID token with Google's API.
+        Verify the Google ID token with Google's API and perform other validations.
         """
+        print(f"GoogleAuthSerializer received data: {data}") # Debug print: See all data received
+        token = data.get('token')
+        role_from_data = data.get('role')
+
+        print(f"GoogleAuthSerializer extracted role: {role_from_data}")
+        # Removed phone_number and birthday debug prints as they are no longer expected from frontend
+
+        if not token:
+            raise serializers.ValidationError({"token": "Google ID token is required."})
+
         try:
-            # Specify the CLIENT_ID of the app that accesses the backend:
-            # This verifies the token's audience against your Google Client ID
             idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), settings.GOOGLE_CLIENT_ID)
 
-            # Ensure the issuer is correct
             if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
                 raise ValueError('Wrong issuer.')
 
-            # Store the verified Google user info for later use in the view
             self.google_user_info = idinfo
-            return token
+            return data # Return the entire validated data dictionary
         except ValueError:
-            # Invalid token
             raise serializers.ValidationError("Invalid Google ID token.")
         except Exception as e:
-            # Catch any other exceptions during verification
             raise serializers.ValidationError(f"Google token verification failed: {e}")
 
     def get_user_info(self):
