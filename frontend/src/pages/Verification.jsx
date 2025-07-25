@@ -49,10 +49,18 @@ const OTPInput = () => {
           <HiMail className="text-9xl text-teil " />
         </div>
       </div>
+      <div className="text-left  mt-20 ml-4">
+        <h5 className="text-base p-2 font-bold">
+          Please enter your verification code
+        </h5>
+        <h5  className="text-sm p-2 font-outfit">
+            We have sent you a verification to your registered email ID. </h5>
+</div>
 
       {/* Bottom Section: OTP Input Box */}
       <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-sm mx-auto text-center">
         <div className="flex justify-center gap-2 mb-4" onPaste={handlePaste}>
+         <hr style={{ border: '1px solid black', margin: '15px 0',}} />
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -64,6 +72,7 @@ const OTPInput = () => {
               onKeyDown={(e) => handleKeyDown(e, index)}
               className="w-10 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg"
             />
+            
           ))}
         </div>
         <button
@@ -71,7 +80,7 @@ const OTPInput = () => {
           onClick={() => alert('OTP Submitted: ' + otp.join(''))}
           className="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition shadow-lg"
         >
-          Submit
+          Done
         </button>
       </div>
     </div>
