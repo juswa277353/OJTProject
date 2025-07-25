@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
 
   const handleSubmit = (e) => {
@@ -21,8 +21,8 @@ function Login() {
 
   return (
     <div className="flex items-center justify-center h-screen rounded-lg">
-      <form
-        onSubmit={handleSubmit}
+      <form onSubmit={handleSubmit}
+
         className="bg-white p-8 rounded w-full py-20 flex flex-col justify-center items-center" >
         <h2 className="text-2xl font-bold mb-6 text-center">Welcome!</h2>
 
@@ -38,11 +38,12 @@ function Login() {
             value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
 
-        <button type="submit" className="w-72 bg-blue text-white py-2 rounded hover:bg-blue-600 rounded-lg transition"> Login </button> 
+        <button type="submit" className="w-72 bg-secondary text-white py-2 rounded hover:bg-blue-600 rounded-lg transition">
+           Login </button> 
         <p className="text-center py-4"> or </p>  
         <button type="button" onClick={signup}
           className="w-72 bg-red text-white py-2 rounded hover:bg-red-600 rounded-lg transition">
-          Create New Account
+          Create
         </button>
       </form>
     </div>

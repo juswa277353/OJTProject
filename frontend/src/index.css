@@ -4,7 +4,12 @@
 @theme{
   --color-red: #ff0000;
   --color-blue: #0000ff;
-  --color-grey: #E9E9EB;
+  --color-grey: #808080;
+  --color-primary: #FFFFFF;
+  --color-secondary: #009494;
+  --color-accent: #FF965D;
+  --collor-silver:#B2B6BA;
+  --color-black::#000000;
   --font-outfit:"Outfit", sans-serif;
 }
 
