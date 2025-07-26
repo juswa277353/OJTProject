@@ -97,7 +97,7 @@ function Signup() {
             <p className="font-outfit text-xl mb-10">Choose your role to get started</p>
 
             <div className="flex flex-col items-center justify-center gap-8 w-full">
-              <div className="w-[80%] flex items-center justify-center flex-col border-3 border-secondary rounded-2xl">
+              <div className="w-[80%] flex items-center justify-center flex-col border-3 border-secondary rounded-2xl ">
                 <LuCalendarDays className="text-secondary text-[8rem]" />
                 <p className="uppercase font-outfit text-secondary font-bold">organizer</p>
               </div>
@@ -173,8 +173,8 @@ function Signup() {
               <div className="flex justify-center mt-6">
                 <HiMail className="text-9xl text-secondary " />
               </div>
-                <p className="text-base p-2 font-bold font-outfit text-left mt-10"> Please enter your verification code </p>
-                <p className="text-base p-1 font-outfit text-left ">  We have sent a verification to your registered email ID. </p>
+                <p className="text-base p-2 font-bold font-outfit text-left mt-10 md:w-80"> Please enter your verification code </p>
+                <p className="text-base p-1  font-outfit text-left md:w-80 ">  We have sent a verification to your registered email ID. </p>
 
               {/* Bottom Section: OTP Input Box */}
               <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-sm mx-auto text-center">
@@ -198,7 +198,7 @@ function Signup() {
 
               <button
                 type="button" onClick={() => setStep(4)}
-                className="w-full bg-teal-600 text-white py-4 rounded-lg hover:bg-teal-700 font-outfit transition shadow-lg">
+                className="w-full bg-teal-600 text-white py-4 rounded-lg hover:bg-teal-700 font-outfit transition shadow-lg md:w-80">
                 Done
               </button>
             </div>
